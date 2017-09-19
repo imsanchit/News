@@ -9,17 +9,14 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(moveToNextController), userInfo: nil,repeats: false)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func moveToNextController() {
+        let navigationController = storyboard?.instantiateViewController(withIdentifier: "SourcesViewNavigationControllerIdentifier") as! UINavigationController
+        self.present(navigationController, animated: true, completion: nil)
     }
-
-
 }
-
