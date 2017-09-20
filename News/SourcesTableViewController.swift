@@ -16,30 +16,41 @@ class SourcesTableViewController: UITableViewController, UIPopoverPresentationCo
         }
     }
 
+    var country: String!{
+        didSet{
+            extractSources(category: "", country: country!)
+        }
+    }
+    var category: String!{
+        didSet{
+            extractSources(category: category!, country: "")
+        }
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        extractSources()
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 154.0
         let nib = UINib(nibName: "SourcesTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "SourceCell")
+        if category == nil &&  country == nil {
+            extractSources(category: "", country: "")
+        }
     }
     
     @IBAction func filter(_ sender: UIBarButtonItem) {
-        let vc = storyboard?.instantiateViewController(withIdentifier: "FilterPopOverViewControllerIdentifier") as! FilterPopOverViewController
-        vc.preferredContentSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        let navController = UINavigationController(rootViewController: vc)
-        navController.modalPresentationStyle = UIModalPresentationStyle.popover
-        
-        let popOver = navController.popoverPresentationController
+        let vc = storyboard?.instantiateViewController(withIdentifier: "FilterPopOverTableViewControllerIdentifier") as! FilterPopOverTableViewController
+         vc.preferredContentSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        vc.modalPresentationStyle = UIModalPresentationStyle.popover
+        vc.owner = self
+        let popOver = vc.popoverPresentationController
         popOver?.delegate = self
         popOver?.barButtonItem = sender as UIBarButtonItem
-        present(navController, animated: true, completion: nil)
-        
+        present(vc, animated: true, completion: nil)
     }
-    private func extractSources() {
-        let url = URL(string: "https://newsapi.org/v1/sources?language=en")
+    private func extractSources(category: String , country: String) {
+        let path = "https://newsapi.org/v1/sources?language=en&category="+category+"&country="+country
+        let url = URL(string: path)
         refreshControl?.beginRefreshing()
         let task = URLSession.shared.dataTask(with: url!) { [weak self] data, response, error  in
             guard let data = data, error == nil else { return }
@@ -57,16 +68,9 @@ class SourcesTableViewController: UITableViewController, UIPopoverPresentationCo
                             guard let strongSelf = self else { return }
                             strongSelf.sources = sources
                             strongSelf.refreshControl?.endRefreshing()
-/*                            for s in sources {
-                                print(s.id!)
-                                print(s.name!)
-                                print(s.description!)
-                                print(s.category!)
-                                print(s.country!)
-                                print(s.language!)
-                                print(s.url!)
+                            if sources.count == 0 {
+                                strongSelf.showAlertDialog()
                             }
-*/
                         }
                     }
                 }
@@ -79,6 +83,12 @@ class SourcesTableViewController: UITableViewController, UIPopoverPresentationCo
     
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
+    }
+    
+    func showAlertDialog(){
+        let alert = UIAlertController(title: "Sorry", message: "No sources found. Change your filter", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 

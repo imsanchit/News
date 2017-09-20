@@ -18,26 +18,45 @@ struct Article {
     enum SerializationError: Error {
         case invalid(String)
     }
+
     
-    init(json: [String:Any]) throws {
-        do {
-            try author = checkValidString(json, "author")
-            //            print(id!)
-            try title = checkValidString(json, "title")
-            try description = checkValidString(json, "description")
-            try url = checkValidString(json, "url")
-            try urlToImage = checkValidString(json, "urlToImage")
-            try publishedAt = checkValidString(json, "publishedAt")
-        }
-        catch {
-            print(error.localizedDescription)
-        }
+    init(json: [String:Any]) {
+        author = checkValidString(json, "author")
+        title = checkValidString(json, "title")
+        description = checkValidString(json, "description")
+        url = checkValidString(json, "url")
+        urlToImage = checkValidString(json, "urlToImage")
+        publishedAt = checkValidString(json, "publishedAt")
     }
     
-    private func checkValidString(_ json: [String:Any], _ key: String) throws ->String {
+    private func checkValidString(_ json: [String:Any], _ key: String) ->String {
         guard let value = json[key] as? String else {
-            throw SerializationError.invalid(key+" type invalid")
+            return ""
         }
         return value
     }
+
+    
+    
+    
+//    init(json: [String:Any]) throws {
+//        do {
+//            try author = checkValidString(json, "author")
+//            try title = checkValidString(json, "title")
+//            try description = checkValidString(json, "description")
+//            try url = checkValidString(json, "url")
+//            try urlToImage = checkValidString(json, "urlToImage")
+//            try publishedAt = checkValidString(json, "publishedAt")
+//        }
+//        catch {
+//            print(error.localizedDescription)
+//        }
+//    }
+//    
+//    private func checkValidString(_ json: [String:Any], _ key: String) throws ->String {
+//        guard let value = json[key] as? String else {
+//            throw SerializationError.invalid(key+" type invalid")
+//        }
+//        return value
+//    }
 }

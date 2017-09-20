@@ -16,6 +16,7 @@ class SourcesTableViewCell: UITableViewCell {
     @IBOutlet weak var country: UILabel!
     var url: String = ""
     var id:String!
+    var sortBysAvailable: [String]!
     var parent: SourcesTableViewController!
     
     @IBAction func openNewsPaper(_ sender: UIButton) {
@@ -31,6 +32,8 @@ class SourcesTableViewCell: UITableViewCell {
         let storyBoard = UIStoryboard(name: "Main", bundle: nil)
         let articlesTableViewController = storyBoard.instantiateViewController(withIdentifier: "ArticlesTableViewControllerIdentifier") as! ArticlesTableViewController
         articlesTableViewController.sourceID = id
+        articlesTableViewController.sortBysAvailable = sortBysAvailable
+        articlesTableViewController.sort = "top"
         parent.navigationController?.pushViewController(articlesTableViewController, animated: true)
     }
     
@@ -41,6 +44,7 @@ class SourcesTableViewCell: UITableViewCell {
         country.text = source.country
         url = source.url!
         id = source.id!
+        sortBysAvailable = source.sortBysAvailable
         self.parent = parent
     }
 }

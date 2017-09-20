@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7506963D1F725FDD006E4D69 /* FilterPopOverTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7506963C1F725FDD006E4D69 /* FilterPopOverTableViewController.swift */; };
+		7506963F1F727F18006E4D69 /* ArticlesFilterPopOverTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7506963E1F727F18006E4D69 /* ArticlesFilterPopOverTableViewController.swift */; };
 		750895EA1F6BC53A000EEBD7 /* Sources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750895E91F6BC53A000EEBD7 /* Sources.swift */; };
-		750D73E71F7031FD00C1506B /* FilterPopOverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750D73E61F7031FD00C1506B /* FilterPopOverViewController.swift */; };
 		750D73E91F70FDEB00C1506B /* ArticlesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750D73E81F70FDEB00C1506B /* ArticlesTableViewController.swift */; };
 		750D73EC1F70FE4800C1506B /* ArticlesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750D73EA1F70FE4800C1506B /* ArticlesTableViewCell.swift */; };
 		750D73ED1F70FE4800C1506B /* ArticlesTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 750D73EB1F70FE4800C1506B /* ArticlesTableViewCell.xib */; };
@@ -24,8 +25,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7506963C1F725FDD006E4D69 /* FilterPopOverTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterPopOverTableViewController.swift; sourceTree = "<group>"; };
+		7506963E1F727F18006E4D69 /* ArticlesFilterPopOverTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticlesFilterPopOverTableViewController.swift; sourceTree = "<group>"; };
 		750895E91F6BC53A000EEBD7 /* Sources.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sources.swift; sourceTree = "<group>"; };
-		750D73E61F7031FD00C1506B /* FilterPopOverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterPopOverViewController.swift; sourceTree = "<group>"; };
 		750D73E81F70FDEB00C1506B /* ArticlesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticlesTableViewController.swift; sourceTree = "<group>"; };
 		750D73EA1F70FE4800C1506B /* ArticlesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticlesTableViewCell.swift; sourceTree = "<group>"; };
 		750D73EB1F70FE4800C1506B /* ArticlesTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ArticlesTableViewCell.xib; sourceTree = "<group>"; };
@@ -90,11 +92,12 @@
 				7529CEB71F6BFFA6001626D8 /* SourcesTableViewCell.swift */,
 				7529CEB81F6BFFA6001626D8 /* SourcesTableViewCell.xib */,
 				751AE92A1F6BE3D900F60514 /* SourcesTableViewController.swift */,
-				750D73E61F7031FD00C1506B /* FilterPopOverViewController.swift */,
+				7506963C1F725FDD006E4D69 /* FilterPopOverTableViewController.swift */,
 				75FFCBDC1F6A6C7E003FFBF0 /* Main.storyboard */,
 				750D73EA1F70FE4800C1506B /* ArticlesTableViewCell.swift */,
 				750D73EB1F70FE4800C1506B /* ArticlesTableViewCell.xib */,
 				750D73E81F70FDEB00C1506B /* ArticlesTableViewController.swift */,
+				7506963E1F727F18006E4D69 /* ArticlesFilterPopOverTableViewController.swift */,
 			);
 			path = News;
 			sourceTree = "<group>";
@@ -174,14 +177,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				750D73EC1F70FE4800C1506B /* ArticlesTableViewCell.swift in Sources */,
-				750D73E71F7031FD00C1506B /* FilterPopOverViewController.swift in Sources */,
 				750D73EF1F71412200C1506B /* Article.swift in Sources */,
+				7506963F1F727F18006E4D69 /* ArticlesFilterPopOverTableViewController.swift in Sources */,
 				751AE92B1F6BE3D900F60514 /* SourcesTableViewController.swift in Sources */,
 				750895EA1F6BC53A000EEBD7 /* Sources.swift in Sources */,
 				75FFCBDB1F6A6C7E003FFBF0 /* ViewController.swift in Sources */,
 				75FFCBD91F6A6C7E003FFBF0 /* AppDelegate.swift in Sources */,
 				7529CEB91F6BFFA6001626D8 /* SourcesTableViewCell.swift in Sources */,
 				750D73E91F70FDEB00C1506B /* ArticlesTableViewController.swift in Sources */,
+				7506963D1F725FDD006E4D69 /* FilterPopOverTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
