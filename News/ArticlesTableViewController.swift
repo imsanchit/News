@@ -26,7 +26,7 @@ class ArticlesTableViewController: UITableViewController , UIPopoverPresentation
     
     @IBAction func filter(_ sender: UIBarButtonItem) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "ArticlesFilterPopOverTableViewControllerIdentifier") as! ArticlesFilterPopOverTableViewController
-        vc.preferredContentSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        vc.preferredContentSize = CGSize(width: UIScreen.main.bounds.width/2, height: UIScreen.main.bounds.height)
         vc.modalPresentationStyle = UIModalPresentationStyle.popover
         vc.owner = self
         vc.sourceId = sourceID
@@ -57,6 +57,9 @@ class ArticlesTableViewController: UITableViewController , UIPopoverPresentation
         return cell
     }
     
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
     
     func fetchArticles() {
         let path = "https://newsapi.org/v1/articles?source="+sourceID!+"&apiKey=ef9ea2e569c249a29291c7b410e63794&sortBy="+sort!

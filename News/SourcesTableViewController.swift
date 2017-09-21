@@ -9,21 +9,13 @@
 import UIKit
 
 class SourcesTableViewController: UITableViewController, UIPopoverPresentationControllerDelegate {
+    var selectedCategoryFilter: CategoryFilters = .all
+    var selectedCountryFilter: CountryFilters = .all
 
+    
     fileprivate var sources: [Sources] = [] {
         didSet {
             tableView.reloadData()
-        }
-    }
-
-    var country: String!{
-        didSet{
-            extractSources(category: "", country: country!)
-        }
-    }
-    var category: String!{
-        didSet{
-            extractSources(category: category!, country: "")
         }
     }
     
@@ -33,22 +25,25 @@ class SourcesTableViewController: UITableViewController, UIPopoverPresentationCo
         tableView.estimatedRowHeight = 154.0
         let nib = UINib(nibName: "SourcesTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "SourceCell")
-        if category == nil &&  country == nil {
-            extractSources(category: "", country: "")
-        }
+        fetchSourcesFor(categoryFilter: .all, countryFilter: .all)
     }
     
     @IBAction func filter(_ sender: UIBarButtonItem) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "FilterPopOverTableViewControllerIdentifier") as! FilterPopOverTableViewController
-         vc.preferredContentSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        vc.modalPresentationStyle = UIModalPresentationStyle.popover
-        vc.owner = self
+         vc.preferredContentSize = CGSize(width: UIScreen.main.bounds.width/2, height: UIScreen.main.bounds.height)
+        vc.modalPresentationStyle = .popover
+        vc.delegate = self
+        vc.selectedCategoryFilter = selectedCategoryFilter
+        vc.selectedCountryFilter = selectedCountryFilter
         let popOver = vc.popoverPresentationController
         popOver?.delegate = self
         popOver?.barButtonItem = sender as UIBarButtonItem
         present(vc, animated: true, completion: nil)
     }
-    private func extractSources(category: String , country: String) {
+    
+    fileprivate func fetchSourcesFor(categoryFilter: CategoryFilters , countryFilter: CountryFilters) {
+        let category = categoryFilter == .all ? "" : categoryFilter.description()
+        let country = countryFilter == .all ? "" : countryFilter.description()
         let path = "https://newsapi.org/v1/sources?language=en&category="+category+"&country="+country
         let url = URL(string: path)
         refreshControl?.beginRefreshing()
@@ -103,5 +98,13 @@ extension SourcesTableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sources.count
+    }
+}
+
+extension SourcesTableViewController : FilterPopOverTableViewControllerProtocol {
+    func applyfilters(category: CategoryFilters, country: CountryFilters) {
+        selectedCategoryFilter = category
+        selectedCountryFilter = country
+        fetchSourcesFor(categoryFilter: category, countryFilter: country)
     }
 }

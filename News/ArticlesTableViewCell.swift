@@ -44,8 +44,6 @@ class ArticlesTableViewCell: UITableViewCell {
                 DispatchQueue.main.async {
                   strongSelf.activityIndicator.stopAnimating()
                     strongSelf.articleImage.image = UIImage(data: imageData)
-                    strongSelf.articleImage.frame.size.height = 100
-                    strongSelf.articleImage.frame.size.width = UIScreen.main.bounds.width
                 }
             } catch let error {
                 print("\(error)")

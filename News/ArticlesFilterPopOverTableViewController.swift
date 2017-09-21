@@ -28,10 +28,6 @@ class ArticlesFilterPopOverTableViewController: UITableViewController {
         return sortBysAvailable!.count
     }
     
-    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
-        return .none
-    }
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ArticlesFilterPopOverTableViewCellIdentifier", for: indexPath)
         cell.accessoryType = .disclosureIndicator
@@ -45,7 +41,7 @@ class ArticlesFilterPopOverTableViewController: UITableViewController {
         articlesTableViewController.sourceID = sourceId!
         articlesTableViewController.sortBysAvailable = sortBysAvailable
         articlesTableViewController.sort = sortBysAvailable?[indexPath.row]
-        self.dismiss(animated: true, completion: {})
+        dismiss(animated: true, completion: {})
         owner?.navigationController?.pushViewController(articlesTableViewController, animated: true)
     }
 }
