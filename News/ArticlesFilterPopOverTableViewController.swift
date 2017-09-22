@@ -8,12 +8,34 @@
 
 import UIKit
 
+enum SortByFilter {
+    case top
+    case latest
+    case popular
+    
+    func description() -> String {
+        switch self {
+        case .top:
+            return "top"
+        case .latest:
+            return "latest"
+        case .popular:
+            return "popular"
+        }
+    }
+}
+
+protocol ArticlesFilterPopOverTableViewControllerProtocol : class {
+    func applyFilters(selectedSortByFilter : SortByFilter)
+}
+
 class ArticlesFilterPopOverTableViewController: UITableViewController {
-
-    var owner: ArticlesTableViewController? = nil
+    
     var sortBysAvailable: [String]?
+    var selectedSortByFilter : SortByFilter!
     var sourceId: String?
-
+    weak var delegate:ArticlesFilterPopOverTableViewControllerProtocol?
+    var sortByFilter : [SortByFilter] = [.top, .latest , .popular]
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.reloadData()
@@ -23,25 +45,46 @@ class ArticlesFilterPopOverTableViewController: UITableViewController {
         return "SortBy"
     }
     
-    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sortBysAvailable!.count
+        return sortByFilter.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ArticlesFilterPopOverTableViewCellIdentifier", for: indexPath)
-        cell.accessoryType = .disclosureIndicator
-        cell.textLabel?.text = sortBysAvailable?[indexPath.row]
+        let description = sortByFilter[indexPath.row].description()
+        if description == selectedSortByFilter.description() {
+            cell.accessoryType = .checkmark
+        }
+        else{
+            cell.accessoryType = .none
+        }
+        
+        if !((sortBysAvailable?.contains(description))!) {
+            cell.isUserInteractionEnabled = false
+            cell.accessoryType = .none
+            cell.backgroundColor = UIColor.lightGray
+        }
+        cell.textLabel?.text = description
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-        let articlesTableViewController = storyBoard.instantiateViewController(withIdentifier: "ArticlesTableViewControllerIdentifier") as! ArticlesTableViewController
-        articlesTableViewController.sourceID = sourceId!
-        articlesTableViewController.sortBysAvailable = sortBysAvailable
-        articlesTableViewController.sort = sortBysAvailable?[indexPath.row]
+        for i in 0 ..< sortByFilter.count {
+            if (sortByFilter[i].description() == tableView.cellForRow(at: indexPath)?.textLabel?.text) {
+                selectedSortByFilter = sortByFilter[i]
+            }
+        }
+        tableView.reloadData()
+    }
+    
+    @IBAction func clear(_ sender: UIButton) {
+        selectedSortByFilter = .top
+        delegate?.applyFilters(selectedSortByFilter: selectedSortByFilter)
         dismiss(animated: true, completion: {})
-        owner?.navigationController?.pushViewController(articlesTableViewController, animated: true)
+    }
+    
+    @IBAction func applyFilter(_ sender: UIButton) {
+        delegate?.applyFilters(selectedSortByFilter: selectedSortByFilter)
+        dismiss(animated: true, completion: {})
     }
 }

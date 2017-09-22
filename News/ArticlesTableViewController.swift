@@ -8,29 +8,26 @@
 
 import UIKit
 
-class ArticlesTableViewController: UITableViewController , UIPopoverPresentationControllerDelegate{
+class ArticlesTableViewController: UITableViewController , UIPopoverPresentationControllerDelegate {
  
     var sourceID:String?
     var sortBysAvailable: [String]?
-    
+    var selectedSortByFilter : SortByFilter = .top
     fileprivate var articles: [Article] = [] {
         didSet {
             tableView.reloadData()
         }
     }
-    var sort: String! {
-        didSet {
-            fetchArticles()
-        }
-    }
+    var sort: String!
     
     @IBAction func filter(_ sender: UIBarButtonItem) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "ArticlesFilterPopOverTableViewControllerIdentifier") as! ArticlesFilterPopOverTableViewController
         vc.preferredContentSize = CGSize(width: UIScreen.main.bounds.width/2, height: UIScreen.main.bounds.height)
         vc.modalPresentationStyle = UIModalPresentationStyle.popover
-        vc.owner = self
         vc.sourceId = sourceID
         vc.sortBysAvailable = sortBysAvailable
+        vc.selectedSortByFilter = selectedSortByFilter
+        vc.delegate = self
         let popOver = vc.popoverPresentationController
         popOver?.delegate = self
         popOver?.barButtonItem = sender as UIBarButtonItem
@@ -45,6 +42,7 @@ class ArticlesTableViewController: UITableViewController , UIPopoverPresentation
         let nib = UINib(nibName: "ArticlesTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "ArticlesCell")
         navigationItem.title = sourceID!
+        fetchArticlesFor(selectedSortByFilter: selectedSortByFilter)
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -61,8 +59,8 @@ class ArticlesTableViewController: UITableViewController , UIPopoverPresentation
         return .none
     }
     
-    func fetchArticles() {
-        let path = "https://newsapi.org/v1/articles?source="+sourceID!+"&apiKey=ef9ea2e569c249a29291c7b410e63794&sortBy="+sort!
+    func fetchArticlesFor(selectedSortByFilter : SortByFilter) {
+        let path = "https://newsapi.org/v1/articles?source="+sourceID!+"&apiKey=ef9ea2e569c249a29291c7b410e63794&sortBy="+selectedSortByFilter.description()
         let url = URL(string: path)
         refreshControl?.beginRefreshing()
         let task = URLSession.shared.dataTask(with: url!) { [weak self] data, response, error  in
@@ -107,5 +105,11 @@ class ArticlesTableViewController: UITableViewController , UIPopoverPresentation
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
+}
 
+extension ArticlesTableViewController: ArticlesFilterPopOverTableViewControllerProtocol {
+    func applyFilters(selectedSortByFilter : SortByFilter) {
+        self.selectedSortByFilter = selectedSortByFilter
+        fetchArticlesFor(selectedSortByFilter: selectedSortByFilter)
+    }
 }
