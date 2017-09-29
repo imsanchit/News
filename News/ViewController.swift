@@ -16,7 +16,6 @@ class ViewController: UIViewController {
     }
     
     func moveToNextController() {
-
         let navigationController = storyboard?.instantiateViewController(withIdentifier: "SourcesViewNavigationControllerIdentifier") as! UINavigationController
         self.present(navigationController, animated: true, completion: nil)
     }

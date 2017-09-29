@@ -7,36 +7,59 @@
 //
 
 import Foundation
-struct Article {
-    var author : String?
-    var title : String?
-    var description : String?
-    var url : String?
-    var urlToImage : String?
-    var publishedAt : String?
-    
-    enum SerializationError: Error {
-        case invalid(String)
-    }
+import ObjectMapper
 
-    
-    init(json: [String:Any]) {
-        author = checkValidString(json, "author")
-        title = checkValidString(json, "title")
-        description = checkValidString(json, "description")
-        url = checkValidString(json, "url")
-        urlToImage = checkValidString(json, "urlToImage")
-        publishedAt = checkValidString(json, "publishedAt")
-    }
-    
-    private func checkValidString(_ json: [String:Any], _ key: String) ->String {
-        guard let value = json[key] as? String else {
-            return ""
-        }
-        return value
-    }
+class Article: Mappable {
+    var author: String?
+    var title: String?
+    var description: String?
+    var url: String?
+    var urlToImage: String?
+    var publishedAt: String?
 
+    required init?(map: Map) {
+    }
     
+    func mapping(map: Map) {
+        author <- map["author"]
+        title <- map["title"]
+        description <- map["description"]
+        url <- map["url"]
+        urlToImage <- map["urlToImage"]
+        publishedAt <- map["publishedAt"]
+    }
+}
+
+//struct Article {
+//    var author : String?
+//    var title : String?
+//    var description : String?
+//    var url : String?
+//    var urlToImage : String?
+//    var publishedAt : String?
+//    
+//    enum SerializationError: Error {
+//        case invalid(String)
+//    }
+//
+//    
+//    init(json: [String:Any]) {
+//        author = checkValidString(json, "author")
+//        title = checkValidString(json, "title")
+//        description = checkValidString(json, "description")
+//        url = checkValidString(json, "url")
+//        urlToImage = checkValidString(json, "urlToImage")
+//        publishedAt = checkValidString(json, "publishedAt")
+//    }
+//    
+//    private func checkValidString(_ json: [String:Any], _ key: String) ->String {
+//        guard let value = json[key] as? String else {
+//            return ""
+//        }
+//        return value
+//    }
+//
+
     
     
 //    init(json: [String:Any]) throws {
@@ -59,4 +82,4 @@ struct Article {
 //        }
 //        return value
 //    }
-}
+//}

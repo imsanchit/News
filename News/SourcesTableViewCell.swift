@@ -37,7 +37,7 @@ class SourcesTableViewCell: UITableViewCell {
         parent.navigationController?.pushViewController(articlesTableViewController, animated: true)
     }
     
-        public func configureCell(source: Sources , parent: SourcesTableViewController) {
+        public func configureCell(source: Source , parent: SourcesTableViewController) {
         name.text = source.name
         desc.text = source.description
         category.text = source.category

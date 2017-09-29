@@ -7,13 +7,15 @@
 //
 
 import UIKit
+import Alamofire
+import AlamofireObjectMapper
 
 class SourcesTableViewController: UITableViewController, UIPopoverPresentationControllerDelegate {
     var selectedCategoryFilter: CategoryFilters = .all
     var selectedCountryFilter: CountryFilters = .all
 
     
-    fileprivate var sources: [Sources] = [] {
+    fileprivate var sourcesResponse: SourcesResponse? {
         didSet {
             tableView.reloadData()
         }
@@ -47,35 +49,22 @@ class SourcesTableViewController: UITableViewController, UIPopoverPresentationCo
         let path = "https://newsapi.org/v1/sources?language=en&category="+category+"&country="+country
         let url = URL(string: path)
         refreshControl?.beginRefreshing()
-        let task = URLSession.shared.dataTask(with: url!) { [weak self] data, response, error  in
-            guard let data = data, error == nil else { return }
-            do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
-                    if let source = json["sources"]! as? [[String: Any]] {
-                        var sources: [Sources] = []
-                        for data in source {
-                            do {
-                                try sources.append(Sources(json: data))
-                            }
-                        }
-                        
-                        DispatchQueue.main.async {
-                            guard let strongSelf = self else { return }
-                            strongSelf.sources = sources
-                            strongSelf.refreshControl?.endRefreshing()
-                            if sources.count == 0 {
-                                strongSelf.showAlertDialog()
-                            }
-                        }
+        Alamofire.request(url!).responseObject { (response: DataResponse<SourcesResponse>) in
+            
+                let sourcesResponse = response.result.value
+//                print(sourcesResponse?.status!)
+                DispatchQueue.main.async {
+                    self.refreshControl?.endRefreshing()
+                    self.sourcesResponse = sourcesResponse!
+                    if self.sourcesResponse?.sources?.count == 0 {
+                    self.showAlertDialog()
                     }
                 }
-            }catch {
-                print(error.localizedDescription)
             }
-        }
-        task.resume()
     }
-    
+
+
+
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
     }
@@ -91,13 +80,13 @@ extension SourcesTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SourceCell", for: indexPath) as! SourcesTableViewCell
-        cell.configureCell(source: sources[indexPath.row], parent: self)
+        cell.configureCell(source: (sourcesResponse?.sources?[indexPath.row])!, parent: self)
 
         return cell
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sources.count
+        return sourcesResponse?.sources?.count ?? 0
     }
 }
 
@@ -108,3 +97,100 @@ extension SourcesTableViewController : FilterPopOverTableViewControllerProtocol 
         fetchSourcesFor(categoryFilter: category, countryFilter: country)
     }
 }
+
+//        Alamofire.request("https://newsapi.org/v1/sources").responseJSON { response in
+//            print("Request: \(String(describing: response.request))")
+//            print("Response: \(String(describing: response.response?.statusCode))")
+//            print("Result: \(response.result)")
+//
+//            if let json = response.result.value {
+//                print("JSON: \(json)") // serialized json response
+//            }
+//
+//            if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
+//                print("Data: \(utf8Text)") // original server data as UTF8 string
+//            }
+//        }
+
+
+//_______________________________________________________________________________________________________________________________________________________________
+
+
+//        Alamofire.request(
+//        URL(string: path)!,
+//        method: .get,
+//        parameters: ["language" : "en", "category" : category, "country" : country]).validate()
+//
+//            .responseJSON(completionHandler: { [weak self] (response) -> Void in
+//                guard let strongSelf = self else { return }
+//                guard response.result.isSuccess else {
+//                    print("Error while fetching remote rooms: \(String(describing: response.result.error))")
+//                    strongSelf.completion(nil)
+//                return
+//            }
+//            guard let json = response.result.value as? [String: Any] ,
+//                let source = json["sources"] as? [[String: Any]] else {
+//                    print("Malformed data received from api")
+//                  strongSelf.completion(nil)
+//                    return
+//            }
+//          strongSelf.completion(source)
+//        })
+
+
+//    func completion(_ source : [[String: Any]]?) {
+//        var sources: [Sources] = []
+//        guard source != nil else {
+//            return
+//        }
+//        for data in source! {
+//            do {
+//                try sources.append(Sources(json: data))
+//            }
+//            catch {
+//                print(error.localizedDescription)
+//            }
+//        }
+//        self.sources = sources
+//        self.refreshControl?.endRefreshing()
+//        if sources.count == 0 {
+//            self.showAlertDialog()
+//        }
+//    }
+
+
+//    fileprivate func fetchSourcesFor(categoryFilter: CategoryFilters , countryFilter: CountryFilters) {
+//        let category = categoryFilter == .all ? "" : categoryFilter.description()
+//        let country = countryFilter == .all ? "" : countryFilter.description()
+//        let path = "https://newsapi.org/v1/sources?language=en&category="+category+"&country="+country
+//        let url = URL(string: path)
+//        refreshControl?.beginRefreshing()
+//        let task = URLSession.shared.dataTask(with: url!) { [weak self] data, response, error  in
+//            guard let data = data, error == nil else { return }
+//            do {
+//                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
+//                    if let source = json["sources"]! as? [[String: Any]] {
+//                        var sources: [Sources] = []
+//                        for data in source {
+//                            do {
+//                                try sources.append(Sources(json: data))
+//                            }
+//                        }
+//
+//                        DispatchQueue.main.async {
+//                            guard let strongSelf = self else { return }
+//                            strongSelf.sources = sources
+//                            strongSelf.refreshControl?.endRefreshing()
+//                            if sources.count == 0 {
+//                                strongSelf.showAlertDialog()
+//                            }
+//                        }
+//                    }
+//                }
+//            }catch {
+//                print(error.localizedDescription)
+//            }
+//        }
+//        task.resume()
+//    }
+//
