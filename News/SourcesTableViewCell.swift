@@ -47,4 +47,7 @@ class SourcesTableViewCell: UITableViewCell {
         sortBysAvailable = source.sortBysAvailable
         self.parent = parent
     }
+
+
+
 }

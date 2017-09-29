@@ -71,24 +71,19 @@ class ArticlesTableViewController: UITableViewController , UIPopoverPresentation
         let path = "https://newsapi.org/v1/articles?source="+sourceID!+"&apiKey=ef9ea2e569c249a29291c7b410e63794&sortBy="+selectedSortByFilter.description()
         let url = URL(string: path)
         refreshControl?.beginRefreshing()
-        
-        Alamofire.request(url!).responseObject(completionHandler: {  (response:DataResponse<ArticlesResponse>) -> Void in
-            let articleResponse = response.result.value
-            print(articleResponse?.status!)
-            print(articleResponse?.sortBy!)
-            print(articleResponse?.source!)
-            DispatchQueue.main.async {
-                self.refreshControl?.endRefreshing()
-                self.articleResponse = articleResponse!
-                if articleResponse?.articles?.count == 0 {
-                    self.showAlertDialog()
-                }
+
+        NewsApiManager.sharedInstance.getResponse(url: url!, completion: { (_ responseType: ArticlesResponse?, _ error: Error?) -> Void in
+            if error != nil {
+                self.showAlertDialog(message: "Some error occurred . Try again")
+                return
+            }
+            self.refreshControl?.endRefreshing()
+            self.articleResponse = responseType
+            if responseType?.articles?.count == 0 {
+                self.showAlertDialog(message: "No articles found. Change your filter")
             }
         })
     }
-    
-//    newsapimanager
-//    singleton class
     
 //        let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
 //            guard let data = data, error == nil else { return }
@@ -162,8 +157,8 @@ class ArticlesTableViewController: UITableViewController , UIPopoverPresentation
 //    }
 
     
-    func showAlertDialog(){
-        let alert = UIAlertController(title: "Sorry", message: "No articles found. Change your filter", preferredStyle: UIAlertControllerStyle.alert)
+    func showAlertDialog(message: String){
+        let alert = UIAlertController(title: "Sorry", message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }

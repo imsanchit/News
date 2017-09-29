@@ -49,18 +49,18 @@ class SourcesTableViewController: UITableViewController, UIPopoverPresentationCo
         let path = "https://newsapi.org/v1/sources?language=en&category="+category+"&country="+country
         let url = URL(string: path)
         refreshControl?.beginRefreshing()
-        Alamofire.request(url!).responseObject { (response: DataResponse<SourcesResponse>) in
-            
-                let sourcesResponse = response.result.value
-//                print(sourcesResponse?.status!)
-                DispatchQueue.main.async {
-                    self.refreshControl?.endRefreshing()
-                    self.sourcesResponse = sourcesResponse!
-                    if self.sourcesResponse?.sources?.count == 0 {
-                    self.showAlertDialog()
-                    }
-                }
+        
+        NewsApiManager.sharedInstance.getResponse(url: url!,completion: { (_ responseType: SourcesResponse?, _ error: Error?) -> Void in
+            if error != nil {
+                self.showAlertDialog(message: "Some error occurred . Try again")
+                return
             }
+            self.refreshControl?.endRefreshing()
+            self.sourcesResponse = responseType
+            if responseType?.sources?.count == 0 {
+            self.showAlertDialog(message: "No sources found. Change your filter")
+            }
+        })
     }
 
 
@@ -69,8 +69,8 @@ class SourcesTableViewController: UITableViewController, UIPopoverPresentationCo
         return .none
     }
     
-    func showAlertDialog(){
-        let alert = UIAlertController(title: "Sorry", message: "No sources found. Change your filter", preferredStyle: UIAlertControllerStyle.alert)
+        func showAlertDialog(message: String){
+        let alert = UIAlertController(title: "Sorry", message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
