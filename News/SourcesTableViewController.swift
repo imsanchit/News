@@ -44,23 +44,28 @@ class SourcesTableViewController: UITableViewController, UIPopoverPresentationCo
     }
     
     fileprivate func fetchSourcesFor(categoryFilter: CategoryFilters , countryFilter: CountryFilters) {
-        let category = categoryFilter == .all ? "" : categoryFilter.description()
-        let country = countryFilter == .all ? "" : countryFilter.description()
-        let path = "https://newsapi.org/v1/sources?language=en&category="+category+"&country="+country
-        let url = URL(string: path)
         refreshControl?.beginRefreshing()
-        
-        NewsApiManager.sharedInstance.getResponse(url: url!,completion: { (_ responseType: SourcesResponse?, _ error: Error?) -> Void in
-            if error != nil {
-                self.showAlertDialog(message: "Some error occurred . Try again")
-                return
-            }
+        NewsApiManager.sharedInstance.getSources(categoryFilter: categoryFilter, countryFilter: countryFilter, showResponse: { (_ sourceResponse: SourcesResponse?) -> Void in
             self.refreshControl?.endRefreshing()
-            self.sourcesResponse = responseType
-            if responseType?.sources?.count == 0 {
-            self.showAlertDialog(message: "No sources found. Change your filter")
+            self.sourcesResponse = sourceResponse
+            if sourceResponse?.sources?.count == 0 {
+                self.showAlertDialog(message: "No sources found. Change your filter")
             }
+        }, showError: { () -> Void in
+            self.showAlertDialog(message: "Some error occurred . Try again")                
         })
+        
+//        NewsApiManager.sharedInstance.getResponse(url: url!,completion: { (_ responseType: SourcesResponse?, _ error: Error?) -> Void in
+//            if error != nil {
+//                self.showAlertDialog(message: "Some error occurred . Try again")
+//                return
+//            }
+//            self.refreshControl?.endRefreshing()
+//            self.sourcesResponse = responseType
+//            if responseType?.sources?.count == 0 {
+//            self.showAlertDialog(message: "No sources found. Change your filter")
+//            }
+//        })
     }
 
 

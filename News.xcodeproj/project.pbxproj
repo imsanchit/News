@@ -93,6 +93,7 @@
 				75760AEB1F7E235C0094D69F /* ArticlesResponse.swift */,
 				75760AE31F7D3DE80094D69F /* Source.swift */,
 				750895E91F6BC53A000EEBD7 /* SourcesResponse.swift */,
+				75760AED1F7E3EA00094D69F /* NewsApiManager.swift */,
 			);
 			name = Responses;
 			sourceTree = "<group>";
@@ -165,7 +166,6 @@
 		75FFCBD71F6A6C7E003FFBF0 /* News */ = {
 			isa = PBXGroup;
 			children = (
-				75760AED1F7E3EA00094D69F /* NewsApiManager.swift */,
 				7558EE701F6A8AD8001C0A9C /* Supporting FIles */,
 				75760AE61F7D3E310094D69F /* Data model */,
 				75760AE71F7D3E470094D69F /* View Controllers */,

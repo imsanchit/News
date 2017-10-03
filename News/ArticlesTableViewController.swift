@@ -66,23 +66,30 @@ class ArticlesTableViewController: UITableViewController , UIPopoverPresentation
         return .none
     }
 
-    
     func fetchArticlesFor(selectedSortByFilter : SortByFilter) {
-        let path = "https://newsapi.org/v1/articles?source="+sourceID!+"&apiKey=ef9ea2e569c249a29291c7b410e63794&sortBy="+selectedSortByFilter.description()
-        let url = URL(string: path)
-        refreshControl?.beginRefreshing()
-
-        NewsApiManager.sharedInstance.getResponse(url: url!, completion: { (_ responseType: ArticlesResponse?, _ error: Error?) -> Void in
-            if error != nil {
-                self.showAlertDialog(message: "Some error occurred . Try again")
-                return
-            }
+        NewsApiManager.sharedInstance.getArticles(selectedSortByFilter: selectedSortByFilter, sourceID: sourceID!, showResponse: { (_ articlesResponse:ArticlesResponse?) -> Void in
             self.refreshControl?.endRefreshing()
-            self.articleResponse = responseType
-            if responseType?.articles?.count == 0 {
+            self.articleResponse = articlesResponse
+            if articlesResponse?.articles?.count == 0 {
                 self.showAlertDialog(message: "No articles found. Change your filter")
             }
+            
+        }, showError: { () -> Void in
+            self.showAlertDialog(message: "Some error occurred . Try again")
         })
+        refreshControl?.beginRefreshing()
+
+//        NewsApiManager.sharedInstance.getResponse(url: url!, completion: { (_ responseType: ArticlesResponse?, _ error: Error?) -> Void in
+//            if error != nil {
+//                self.showAlertDialog(message: "Some error occurred . Try again")
+//                return
+//            }
+//            self.refreshControl?.endRefreshing()
+//            self.articleResponse = responseType
+//            if responseType?.articles?.count == 0 {
+//                self.showAlertDialog(message: "No articles found. Change your filter")
+//            }
+//        })
     }
     
 //        let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
