@@ -36,10 +36,10 @@ class ArticlesTableViewCell: UITableViewCell {
         url = article.url!
         let imageURL = URL(string: article.urlToImage!)
         activityIndicator.startAnimating()
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        
+        DispatchQueue.global(qos: .userInitiated).async(execute: { [weak self] () -> Void in
             guard let strongSelf = self else { return }
             do {
-//               print(data["author"] as? String ?? "")
             let imageData = try Data(contentsOf: imageURL!)
                 DispatchQueue.main.async {
                   strongSelf.activityIndicator.stopAnimating()
@@ -48,7 +48,19 @@ class ArticlesTableViewCell: UITableViewCell {
             } catch let error {
                 print("\(error)")
             }
-        }
-    
+        })
+        
+//        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+//            guard let strongSelf = self else { return }
+//            do {
+//            let imageData = try Data(contentsOf: imageURL!)
+//                DispatchQueue.main.async {
+//                  strongSelf.activityIndicator.stopAnimating()
+//                    strongSelf.articleImage.image = UIImage(data: imageData)
+//                }
+//            } catch let error {
+//                print("\(error)")
+//            }
+//        }
     }
 }

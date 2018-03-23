@@ -10,7 +10,6 @@ import Foundation
 import Alamofire
 import ObjectMapper
 
-// only contain object for responseType as Response data
 final class NewsApiManager {
     static let sharedInstance = NewsApiManager()
     private init() {}
@@ -34,7 +33,7 @@ final class NewsApiManager {
                 return
             }
             showResponse(responseType)
-            })
+        })
     }
 
     public func getArticles(selectedSortByFilter: SortByFilter, sourceID: String, showResponse: @escaping(_ articlesResponse:ArticlesResponse?) -> Void, showError: @escaping() -> Void ) {

@@ -20,11 +20,6 @@ class ArticlesTableViewController: UITableViewController , UIPopoverPresentation
             tableView.reloadData()
         }
     }
-//    fileprivate var articles: [Article] = [] {
-//        didSet {
-//            tableView.reloadData()
-//        }
-//    }
     var sort: String!
     
     @IBAction func filter(_ sender: UIBarButtonItem) {
@@ -67,15 +62,17 @@ class ArticlesTableViewController: UITableViewController , UIPopoverPresentation
     }
 
     func fetchArticlesFor(selectedSortByFilter : SortByFilter) {
-        NewsApiManager.sharedInstance.getArticles(selectedSortByFilter: selectedSortByFilter, sourceID: sourceID!, showResponse: { (_ articlesResponse:ArticlesResponse?) -> Void in
-            self.refreshControl?.endRefreshing()
-            self.articleResponse = articlesResponse
+        NewsApiManager.sharedInstance.getArticles(selectedSortByFilter: selectedSortByFilter, sourceID: sourceID!, showResponse: { [weak self] (_ articlesResponse:ArticlesResponse?) -> Void in
+            guard let strongSelf = self else { return }
+            strongSelf.refreshControl?.endRefreshing()
+            strongSelf.articleResponse = articlesResponse
             if articlesResponse?.articles?.count == 0 {
-                self.showAlertDialog(message: "No articles found. Change your filter")
+                strongSelf.showAlertDialog(message: "No articles found. Change your filter")
             }
             
-        }, showError: { () -> Void in
-            self.showAlertDialog(message: "Some error occurred . Try again")
+        }, showError: { [weak self] () -> Void in
+            guard let strongSelf = self else { return }
+            strongSelf.showAlertDialog(message: "Some error occurred . Try again")
         })
         refreshControl?.beginRefreshing()
 
